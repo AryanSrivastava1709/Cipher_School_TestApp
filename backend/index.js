@@ -6,6 +6,7 @@ const connectToDB = require("./utils/connectToDb");
 const authRoutes = require("./routes/authRoutes");
 const testRoutes = require("./routes/testRoutes");
 const questionRoutes = require("./routes/questionRoutes");
+const JSONErrorHandler = require("./utils/JSONErrorHandler");
 
 const app = express();
 
@@ -36,6 +37,9 @@ try {
 app.use("/api/auth", authRoutes);
 app.use("/api/test", testRoutes);
 app.use("/api/question", questionRoutes);
+
+// Error handler middleware
+app.use(JSONErrorHandler);
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {

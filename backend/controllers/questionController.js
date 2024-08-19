@@ -32,7 +32,10 @@ const createQuestion = async (req, res) => {
 			question: newQuestion,
 		});
 	} catch (error) {
-		return res.status(500).json({ message: error.message });
+		return res.status(500).json({
+			message: "Problem creating question",
+			error: error.message,
+		});
 	}
 };
 
