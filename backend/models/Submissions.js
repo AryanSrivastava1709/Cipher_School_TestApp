@@ -27,6 +27,10 @@ const submissionSchema = mongoose.Schema({
 			},
 		},
 	],
+	isEvaluated: {
+		type: Boolean,
+		default: false,
+	},
 	endedAt: {
 		type: Date,
 	},
