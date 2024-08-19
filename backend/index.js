@@ -6,6 +6,7 @@ const connectToDB = require("./utils/connectToDb");
 const authRoutes = require("./routes/authRoutes");
 const testRoutes = require("./routes/testRoutes");
 const questionRoutes = require("./routes/questionRoutes");
+const submissionRoutes = require("./routes/submissionRoutes");
 const JSONErrorHandler = require("./utils/JSONErrorHandler");
 
 const app = express();
@@ -37,6 +38,7 @@ try {
 app.use("/api/auth", authRoutes);
 app.use("/api/test", testRoutes);
 app.use("/api/question", questionRoutes);
+app.use("/api/submission", submissionRoutes);
 
 // Error handler middleware
 app.use(JSONErrorHandler);

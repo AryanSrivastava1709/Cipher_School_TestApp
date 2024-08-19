@@ -1,6 +1,7 @@
 const Test = require("../models/Test");
 const Question = require("../models/Question");
 
+//create a test
 const createTest = async (req, res) => {
 	try {
 		const { title, descriptions, questions, isAdmin } = req.body;
