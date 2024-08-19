@@ -163,10 +163,10 @@ const deleteTest = async (req, res) => {
 				.json({ message: "You are not authorized to perform this action" });
 		}
 		const test = await Test.findById(id);
-		const { isDeleted } = test;
 		if (!test || isDeleted) {
 			return res.status(404).json({ message: "Test not found" });
 		}
+		const { isDeleted } = test;
 		test.isDeleted = true;
 		await test.save();
 		return res.status(200).json({ message: "Test deleted successfully" });
