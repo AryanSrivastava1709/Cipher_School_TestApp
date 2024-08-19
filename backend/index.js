@@ -43,6 +43,11 @@ app.use("/api/test", testRoutes);
 app.use("/api/question", questionRoutes);
 app.use("/api/submission", submissionRoutes);
 
+// test route
+app.get("/", (req, res) => {
+	res.send("Hello World");
+});
+
 // Error handler middleware
 app.use(JSONErrorHandler);
 
