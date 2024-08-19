@@ -13,6 +13,9 @@ const app = express();
 
 // Not used dotnev instead used Nodejs 20 latest feature that is you can directly use process.env by specifying .env file
 
+//cron job - to run every hour
+require("./utils/cronScheduler");
+
 //Middleware
 app.use(express.json()); // For parsing application/json
 app.use(cookieParser()); // For parsing cookies

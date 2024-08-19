@@ -1,0 +1,49 @@
+doctype html
+html
+  head
+    meta(charset="UTF-8")
+    meta(name="viewport" content="width=device-width, initial-scale=1.0")
+    style.
+      .container {
+        font-family: Arial, sans-serif;
+        padding: 20px;
+        max-width: 600px;
+        margin: auto;
+        border: 1px solid #ddd;
+        border-radius: 10px;
+        background-color: #f9f9f9;
+      }
+      .title {
+        color: #333;
+        text-align: center;
+      }
+      .content {
+        font-size: 16px;
+        color: #555;
+      }
+      .score {
+        margin: 20px 0;
+        text-align: center;
+        font-size: 24px;
+        color: #4CAF50;
+        font-weight: bold;
+      }
+      .footer {
+        font-size: 16px;
+        color: #555;
+        text-align: center;
+      }
+  body
+    .container
+      h2.title Congratulations, #{username}!
+      p.content
+        | You have successfully completed the 
+        strong #{testname}
+        |  quiz. We are excited to share your score with you!
+      div.score Your Score: #{score}
+      p.content
+        | Keep up the great work! If you have any questions or need further assistance, feel free to reach out.
+      p.footer
+        | Best regards,
+        br
+        | The Quiz Team
