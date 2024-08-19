@@ -19,10 +19,12 @@ const questionSchema = mongoose.Schema({
 		type: Number,
 		required: true,
 	},
-	testId: {
-		type: mongoose.Schema.Types.ObjectId,
-		ref: "Test",
-	},
+	testId: [
+		{
+			type: mongoose.Schema.Types.ObjectId,
+			ref: "Test",
+		},
+	],
 	createdAt: {
 		type: Date,
 		default: Date.now,
