@@ -52,10 +52,6 @@ const useUserStore = create(
 				set({ user: null, isAuthenticated: false, isAdmin: false });
 				Cookies.remove("token");
 			},
-
-			// test function
-			setUser: (userData) => set({ user: userData }),
-			setLoading: (loading) => set({ loading }),
 		}),
 
 		{

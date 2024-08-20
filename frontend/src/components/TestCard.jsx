@@ -1,27 +1,34 @@
-import React from "react";
 import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
+import useTestStore from "../stores/testStore";
 
 function TestCard({ test }) {
+	const { setCurrentTest } = useTestStore();
+
 	return (
-		<div className='bg-white border border-gray-200 rounded-lg shadow-lg overflow-hidden transition-transform transform hover:scale-105 hover:shadow-2xl hover:border-blue-300'>
+		<div className='bg-white border border-gray-200 rounded-lg shadow-lg overflow-hidden transition-transform transform hover:scale-105 hover:shadow-xl hover:border-blue-400'>
 			<img
 				src='https://static.vecteezy.com/system/resources/previews/002/958/141/original/exam-and-quiz-vector.jpg'
 				alt='Test Image'
-				className='w-full h-40 object-cover'
+				className='w-full h-48 object-cover'
 			/>
-			<div className='p-4'>
-				<h2 className='text-2xl font-bold text-gray-800 mb-2'>{test.title}</h2>
+			<div className='p-6'>
+				<h2 className='text-2xl font-semibold text-gray-900 mb-2'>
+					{test.title}
+				</h2>
 				<p className='text-gray-700 mb-4'>{test.descriptions}</p>
-				<p className='text-gray-600 mb-4 text-sm'>
-					Questions: {test.questions.length}
-				</p>
-				<Link
-					to={`/test/${test._id}`}
-					className='inline-block bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors'
-				>
-					Take Test
-				</Link>
+				<div className='flex justify-between items-center mb-4'>
+					<p className='text-gray-600 text-sm'>
+						<span className='font-semibold'>Questions:</span>{" "}
+						{test.questions.length}
+					</p>
+					<Link
+						to={`/test/${test._id}`}
+						className='bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-800 transition-colors'
+					>
+						Start Test
+					</Link>
+				</div>
 			</div>
 		</div>
 	);

@@ -2,6 +2,7 @@ import axios from "axios";
 import create from "zustand";
 import { persist } from "zustand/middleware";
 import Cookies from "js-cookie";
+import toast from "react-hot-toast";
 
 const useTestStore = create(
 	persist(
@@ -10,38 +11,59 @@ const useTestStore = create(
 			currentTest: null,
 			isLoading: false,
 
+			// Fetch all tests
 			fetchTests: async () => {
-				set({ isLoading: true });
-				const response = await axios.get(
-					"https://quiz-app-api-seven.vercel.app/api/test",
-					{
-						headers: {
-							Authorization: `Bearer ${Cookies.get("token")}`,
-						},
+				try {
+					set({ isLoading: true });
+					const response = await axios.get(
+						"https://quiz-app-api-seven.vercel.app/api/test",
+						{
+							headers: {
+								Authorization: `Bearer ${Cookies.get("token")}`,
+							},
+						}
+					);
+					const data = await response.data.tests;
+					set({ tests: data, isLoading: false });
+					toast.success("Tests fetched successfully");
+				} catch (error) {
+					set({ isLoading: false });
+					if (error.response) {
+						toast.error(error.response.data.message);
+					} else {
+						toast.error("An unexpected error occurred");
 					}
-				);
-				const data = await response.data.tests;
-				console.log(data);
-				set({ tests: data, isLoading: false });
+				}
 			},
 			fetchTestById: async (testId) => {
-				set({ isLoading: true });
-				const response = await fetch(`/api/tests/${testId}`);
-				const data = await response.json();
-				set({ currentTest: data, isLoading: false });
+				try {
+					set({ isLoading: true });
+					const response = await axios.get(
+						`https://quiz-app-api-seven.vercel.app/api/test/${testId}`,
+						{
+							headers: {
+								Authorization: `Bearer ${Cookies.get("token")}`,
+							},
+						}
+					);
+					const data = await response.data;
+					set({ currentTest: data, isLoading: false });
+					toast.success("Test fetched successfully");
+				} catch (error) {
+					set({ isLoading: false });
+					if (error.response) {
+						toast.error(error.response.data.message);
+					} else {
+						toast.error("An unexpected error occurred");
+					}
+				}
 			},
+
+			// Setters
+			setTests: (tests) => set({ tests }),
+
+			// Set the current test
 			setCurrentTest: (test) => set({ currentTest: test }),
-			addTest: (test) => set((state) => ({ tests: [...state.tests, test] })),
-			updateTest: (updatedTest) =>
-				set((state) => ({
-					tests: state.tests.map((test) =>
-						test._id === updatedTest._id ? updatedTest : test
-					),
-				})),
-			deleteTest: (testId) =>
-				set((state) => ({
-					tests: state.tests.filter((test) => test._id !== testId),
-				})),
 		}),
 		{
 			name: "test-storage",
