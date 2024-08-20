@@ -7,14 +7,12 @@ const authRoutes = require("./routes/authRoutes");
 const testRoutes = require("./routes/testRoutes");
 const questionRoutes = require("./routes/questionRoutes");
 const submissionRoutes = require("./routes/submissionRoutes");
+const evaluationController = require("./controllers/evaluationController");
 const JSONErrorHandler = require("./utils/JSONErrorHandler");
 
 const app = express();
 
 // Not used dotnev instead used Nodejs 20 latest feature that is you can directly use process.env by specifying .env file
-
-//cron job - to run every hour
-require("./utils/cronScheduler");
 
 //Middleware
 app.use(express.json()); // For parsing application/json
@@ -42,6 +40,20 @@ app.use("/api/auth", authRoutes);
 app.use("/api/test", testRoutes);
 app.use("/api/question", questionRoutes);
 app.use("/api/submission", submissionRoutes);
+
+//api route to run cron job every hour
+// This cron job will evaluate all the submissions every hour
+app.post("/api/cronjob", async (req, res) => {
+	try {
+		await evaluationController.evaluateAll();
+		res
+			.status(200)
+			.json({ message: "All the submission are evaluated successfully" });
+	} catch (error) {
+		console.error("Error in cron job", error);
+		res.status(500).json({ message: "Error in evaluating the submissions" });
+	}
+});
 
 // test route
 app.get("/", (req, res) => {

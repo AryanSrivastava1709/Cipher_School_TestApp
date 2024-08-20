@@ -1,0 +1,684 @@
+{
+	"info": {
+		"_postman_id": "2492d198-0d88-42da-a88a-346453c28c71",
+		"name": "Quiz_App",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "23158412"
+	},
+	"item": [
+		{
+			"name": "Auth Routes",
+			"item": [
+				{
+					"name": "Register User",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\":\"blink.sahar@gmail.com\",\r\n    \"password\":\"12345678\",\r\n    \"name\":\"Sahar Mukhtar\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://quiz-app-api-seven.vercel.app/api/auth/register",
+							"protocol": "https",
+							"host": [
+								"quiz-app-api-seven",
+								"vercel",
+								"app"
+							],
+							"path": [
+								"api",
+								"auth",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.environment.set(\"jwt\",pm.response.json().token );"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"blink.sahar@gmail.com\",\r\n    \"password\": \"12345678\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://quiz-app-api-seven.vercel.app/api/auth/login",
+							"protocol": "https",
+							"host": [
+								"quiz-app-api-seven",
+								"vercel",
+								"app"
+							],
+							"path": [
+								"api",
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Logout",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwt}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://quiz-app-api-seven.vercel.app/api/auth/logout",
+							"protocol": "https",
+							"host": [
+								"quiz-app-api-seven",
+								"vercel",
+								"app"
+							],
+							"path": [
+								"api",
+								"auth",
+								"logout"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Question Routes",
+			"item": [
+				{
+					"name": "create question",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwt}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"question\": \"What is the capital of India?\",\r\n    \"options\":[\r\n        \"Delhi\",\r\n        \"Assam\",\r\n        \"Uttar Pradesh\",\r\n        \"Madhya Pradesh\"\r\n    ],\r\n    \"correctOption\": \"Delhi\",\r\n    \"marks\": 1,\r\n    \"isAdmin\":true\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://quiz-app-api-seven.vercel.app/api/question",
+							"protocol": "https",
+							"host": [
+								"quiz-app-api-seven",
+								"vercel",
+								"app"
+							],
+							"path": [
+								"api",
+								"question"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Questions",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwt}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://quiz-app-api-seven.vercel.app/api/question",
+							"protocol": "https",
+							"host": [
+								"quiz-app-api-seven",
+								"vercel",
+								"app"
+							],
+							"path": [
+								"api",
+								"question"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get question by id",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwt}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://quiz-app-api-seven.vercel.app/api/question/66c20fc1ee74919738778c40",
+							"protocol": "https",
+							"host": [
+								"quiz-app-api-seven",
+								"vercel",
+								"app"
+							],
+							"path": [
+								"api",
+								"question",
+								"66c20fc1ee74919738778c40"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update question",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwt}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"question\":\"What is the capital of India?\",\r\n    \"options\":[\r\n        \"Delhi\",\r\n        \"Assam\",\r\n        \"Uttar Pradesh\",\r\n        \"Madhya Pradesh\"\r\n    ],\r\n    \"correctOption\":\"Delhi\",\r\n    \"marks\":2,\r\n    \"isAdmin\":true\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://quiz-app-api-seven.vercel.app/api/question/66c20f07ccf6b4db1d002d99",
+							"protocol": "https",
+							"host": [
+								"quiz-app-api-seven",
+								"vercel",
+								"app"
+							],
+							"path": [
+								"api",
+								"question",
+								"66c20f07ccf6b4db1d002d99"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Question",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwt}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"isAdmin\":true\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://quiz-app-api-seven.vercel.app/api/question/66c2ea57ee79aa8607417461",
+							"protocol": "https",
+							"host": [
+								"quiz-app-api-seven",
+								"vercel",
+								"app"
+							],
+							"path": [
+								"api",
+								"question",
+								"66c2ea57ee79aa8607417461"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Test Routes",
+			"item": [
+				{
+					"name": "Create test",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwt}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"title\": \"General Knowledge Quiz 1\",\r\n  \"descriptions\": \"A quiz to test general knowledge with a variety of questions on different topics.\",\r\n  \"questions\": [\r\n    \"66c2eaddee79aa8607417468\",\r\n    \"66c20fc1ee74919738778c40\",\r\n    \"66c20fd3ee74919738778c43\",\r\n    \"66c20fe2ee74919738778c46\",\r\n    \"66c21006ee74919738778c4c\",\r\n    \"66c20ffbee74919738778c49\",\r\n    \"66c21016ee74919738778c4f\",\r\n    \"66c21038ee74919738778c52\",\r\n    \"66c21047ee74919738778c55\",\r\n    \"66c21055ee74919738778c59\"\r\n  ],\r\n  \"isAdmin\":true\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://quiz-app-api-seven.vercel.app/api/test",
+							"protocol": "https",
+							"host": [
+								"quiz-app-api-seven",
+								"vercel",
+								"app"
+							],
+							"path": [
+								"api",
+								"test"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get tests",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwt}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://quiz-app-api-seven.vercel.app/api/test",
+							"protocol": "https",
+							"host": [
+								"quiz-app-api-seven",
+								"vercel",
+								"app"
+							],
+							"path": [
+								"api",
+								"test"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get test by id",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwt}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://quiz-app-api-seven.vercel.app/api/test/66c2d11c85e7c40e0892ecc2",
+							"protocol": "https",
+							"host": [
+								"quiz-app-api-seven",
+								"vercel",
+								"app"
+							],
+							"path": [
+								"api",
+								"test",
+								"66c2d11c85e7c40e0892ecc2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Test",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwt}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"questions\":[\r\n        \"66c20f07ccf6b4db1d002d99\",\r\n        \"66c20fc1ee74919738778c40\",\r\n        \"66c20fd3ee74919738778c43\",\r\n        \"66c20fe2ee74919738778c46\"\r\n    ],\r\n    \"isAdmin\": true\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://quiz-app-api-seven.vercel.app/api/test/66c2d12b85e7c40e0892ecc7",
+							"protocol": "https",
+							"host": [
+								"quiz-app-api-seven",
+								"vercel",
+								"app"
+							],
+							"path": [
+								"api",
+								"test",
+								"66c2d12b85e7c40e0892ecc7"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Test",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwt}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"isAdmin\":true\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://quiz-app-api-seven.vercel.app/api/test/66c2d12b85e7c40e0892ecc7",
+							"protocol": "https",
+							"host": [
+								"quiz-app-api-seven",
+								"vercel",
+								"app"
+							],
+							"path": [
+								"api",
+								"test",
+								"66c2d12b85e7c40e0892ecc7"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Submission Routes",
+			"item": [
+				{
+					"name": "Submit test",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwt}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"testId\": \"66c2d11c85e7c40e0892ecc2\",\r\n    \"userId\": \"66c37f5f26f5e7c26737759e\",\r\n    \"selections\": [\r\n        {\r\n            \"questionId\": \"66c20fc1ee74919738778c40\",\r\n            \"option\": \"4\",\r\n            \"savedAt\": \"2024-08-19T07:00:00Z\"\r\n        },\r\n        {\r\n            \"questionId\": \"66c20fd3ee74919738778c43\",\r\n            \"option\": \"Mars\",\r\n            \"savedAt\": \"2024-08-19T07:01:00Z\"\r\n        },\r\n        {\r\n            \"questionId\": \"66c20fe2ee74919738778c46\",\r\n            \"option\": \"William Shakespeare\",\r\n            \"savedAt\": \"2024-08-19T07:02:00Z\"\r\n        },\r\n        {\r\n            \"questionId\": \"66c21006ee74919738778c4c\",\r\n            \"option\": \"Carbon Dioxide\",\r\n            \"savedAt\": \"2024-08-19T07:03:00Z\"\r\n        },\r\n        {\r\n            \"questionId\": \"66c20ffbee74919738778c49\",\r\n            \"option\": \"100°C\",\r\n            \"savedAt\": \"2024-08-19T07:04:00Z\"\r\n        },\r\n        {\r\n            \"questionId\": \"66c21016ee74919738778c4f\",\r\n            \"option\": \"Blue Whale\",\r\n            \"savedAt\": \"2024-08-19T07:05:00Z\"\r\n        },\r\n        {\r\n            \"questionId\": \"66c21038ee74919738778c52\",\r\n            \"option\": \"Oxygen\",\r\n            \"savedAt\": \"2024-08-19T07:06:00Z\"\r\n        },\r\n        {\r\n            \"questionId\": \"66c21047ee74919738778c55\",\r\n            \"option\": \"Jupiter\",\r\n            \"savedAt\": \"2024-08-19T07:07:00Z\"\r\n        },\r\n        {\r\n            \"questionId\": \"66c21055ee74919738778c59\",\r\n            \"option\": \"1945\",\r\n            \"savedAt\": \"2024-08-19T07:08:00Z\"\r\n        },\r\n        {\r\n            \"questionId\": \"66c2eaddee79aa8607417468\",\r\n            \"option\": \"Delhi\",\r\n            \"savedAt\": \"2024-08-19T07:09:00Z\"\r\n        }\r\n    ]\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://quiz-app-api-seven.vercel.app/api/submission",
+							"protocol": "https",
+							"host": [
+								"quiz-app-api-seven",
+								"vercel",
+								"app"
+							],
+							"path": [
+								"api",
+								"submission"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get all submission",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwt}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://quiz-app-api-seven.vercel.app/api/submission",
+							"protocol": "https",
+							"host": [
+								"quiz-app-api-seven",
+								"vercel",
+								"app"
+							],
+							"path": [
+								"api",
+								"submission"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get submission by testID",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwt}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://quiz-app-api-seven.vercel.app/api/submission/test/66c2ebc3ee79aa8607417482",
+							"protocol": "https",
+							"host": [
+								"quiz-app-api-seven",
+								"vercel",
+								"app"
+							],
+							"path": [
+								"api",
+								"submission",
+								"test",
+								"66c2ebc3ee79aa8607417482"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get submission by userId",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwt}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://quiz-app-api-seven.vercel.app/api/submission/user/66c3463580d10c2ea39a93cf",
+							"protocol": "https",
+							"host": [
+								"quiz-app-api-seven",
+								"vercel",
+								"app"
+							],
+							"path": [
+								"api",
+								"submission",
+								"user",
+								"66c3463580d10c2ea39a93cf"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get by user and test",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwt}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://quiz-app-api-seven.vercel.app/api/submission?userId=66c3463580d10c2ea39a93cf&testId=66c2ebc3ee79aa8607417482",
+							"protocol": "https",
+							"host": [
+								"quiz-app-api-seven",
+								"vercel",
+								"app"
+							],
+							"path": [
+								"api",
+								"submission"
+							],
+							"query": [
+								{
+									"key": "userId",
+									"value": "66c3463580d10c2ea39a93cf"
+								},
+								{
+									"key": "testId",
+									"value": "66c2ebc3ee79aa8607417482"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
