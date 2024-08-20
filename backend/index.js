@@ -20,12 +20,7 @@ app.use(cookieParser()); // For parsing cookies
 app.use(helmet()); // For security headers
 
 //Cors
-app.use(
-	cors({
-		origins: true,
-		credentials: true,
-	})
-);
+app.use(cors());
 
 //connect to database
 try {
