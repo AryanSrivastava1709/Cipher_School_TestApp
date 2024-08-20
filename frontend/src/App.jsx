@@ -7,7 +7,8 @@ import TestWindow from "./routes/TestWindow";
 import Submit from "./routes/Submit";
 import PrivateRoute from "./components/PrivateRoute";
 import { Toaster } from "react-hot-toast";
-import Navbar from "./components/Navbar"; // Import Navbar
+import Navbar from "./components/Navbar";
+import Footer from "./components/Footer";
 import NotFound from "./components/NotFound";
 
 function App() {
@@ -25,6 +26,7 @@ function App() {
 								<>
 									<Navbar />
 									<Home />
+									<Footer />
 								</>
 							}
 						/>
@@ -34,6 +36,7 @@ function App() {
 								<>
 									<Navbar />
 									<Test />
+									<Footer />
 								</>
 							}
 						/>
