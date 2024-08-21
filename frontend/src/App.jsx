@@ -10,6 +10,7 @@ import { Toaster } from "react-hot-toast";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import NotFound from "./components/NotFound";
+import PermissionComponent from "./routes/PermissionComponent";
 
 function App() {
 	return (
@@ -36,6 +37,16 @@ function App() {
 								<>
 									<Navbar />
 									<Test />
+									<Footer />
+								</>
+							}
+						/>
+						<Route
+							path='/permissions/:id'
+							element={
+								<>
+									<Navbar />
+									<PermissionComponent />
 									<Footer />
 								</>
 							}

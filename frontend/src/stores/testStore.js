@@ -35,6 +35,8 @@ const useTestStore = create(
 					}
 				}
 			},
+
+			// Fetch a test by ID
 			fetchTestById: async (testId) => {
 				try {
 					set({ isLoading: true });
@@ -49,6 +51,32 @@ const useTestStore = create(
 					const data = await response.data;
 					set({ currentTest: data, isLoading: false });
 					toast.success("Test fetched successfully");
+				} catch (error) {
+					set({ isLoading: false });
+					if (error.response) {
+						toast.error(error.response.data.message);
+					} else {
+						toast.error("An unexpected error occurred");
+					}
+				}
+			},
+
+			// Submit the test
+			submitTest: async (submissionData) => {
+				try {
+					set({ isLoading: true });
+					const response = await axios.post(
+						"https://quiz-app-api-seven.vercel.app/api/submission",
+						submissionData,
+						{
+							headers: {
+								Authorization: `Bearer ${Cookies.get("token")}`,
+							},
+						}
+					);
+					set({ isLoading: false });
+					const data = await response.data;
+					console.log(data);
 				} catch (error) {
 					set({ isLoading: false });
 					if (error.response) {

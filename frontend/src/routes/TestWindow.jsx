@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useForm, Controller } from "react-hook-form";
 import useTestStore from "../stores/testStore";
@@ -10,29 +10,49 @@ function TestWindow() {
 	const { user } = useUserStore();
 	const navigate = useNavigate();
 	const [error, setError] = useState(null);
-	const { fetchTestById, currentTest, setCurrentTest, isLoading } =
+	const { fetchTestById, currentTest, setCurrentTest, isLoading, submitTest } =
 		useTestStore();
-	const [timer, setTimer] = useState(1800);
-	const [totalTime, setTotalTime] = useState(1800);
-	const { control, handleSubmit, getValues, setValue } = useForm();
+	const [timer, setTimer] = useState(null);
+	const [totalTime, setTotalTime] = useState(null);
+	const timerRef = useRef(null);
+	const { control, handleSubmit, setValue, getValues } = useForm();
 	const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
 	const [selections, setSelections] = useState({});
+	const [isSubmitting, setIsSubmitting] = useState(false);
 
-	const handleSubmitForm = useCallback(async () => {
-		const submissionData = {
-			testId: id,
-			userId: user.id,
-			selections: Object.entries(selections).map(([questionIndex, option]) => ({
-				questionId: currentTest.test.questions[parseInt(questionIndex, 10)]._id,
-				option,
-				savedAt: new Date().toISOString(),
-			})),
-		};
+	const handleSubmitForm = useCallback(
+		async (isTimerExpired = false) => {
+			if (isSubmitting) return; // Prevent multiple submissions
 
-		console.log("Submission Data:", submissionData);
-		alert("Test submitted automatically due to timer expiration");
-		navigate("/submit");
-	}, [selections, currentTest, id, user.id, navigate]);
+			setIsSubmitting(true);
+
+			const submissionData = {
+				testId: id,
+				userId: user.id,
+				selections: Object.entries(selections).map(
+					([questionIndex, option]) => ({
+						questionId:
+							currentTest.test.questions[parseInt(questionIndex, 10)]._id,
+						option,
+						savedAt: new Date().toISOString(),
+					})
+				),
+			};
+
+			try {
+				await submitTest(submissionData);
+				// Refresh the page before navigating
+				navigate("/submit");
+				window.location.reload();
+			} catch (error) {
+				console.error("Submission error:", error);
+				alert("Failed to submit the test. Please try again.");
+			} finally {
+				setIsSubmitting(false);
+			}
+		},
+		[selections, currentTest, id, user.id, submitTest, navigate, isSubmitting]
+	);
 
 	useEffect(() => {
 		const fetchData = async () => {
@@ -47,46 +67,48 @@ function TestWindow() {
 	}, [id, fetchTestById]);
 
 	useEffect(() => {
-		if (currentTest?.test) {
+		if (currentTest?.test && timerRef.current === null) {
 			const duration = currentTest.test.questions.length * 90;
 			setTotalTime(duration);
 			setTimer(duration);
-
-			currentTest.test.questions.forEach((_, index) => {
-				setValue(`question_${index}`, selections[index] || "");
-			});
+			timerRef.current = duration;
 		}
-	}, [currentTest, setValue, selections]);
+	}, [currentTest]);
 
 	useEffect(() => {
-		if (timer <= 0) {
-			handleSubmitForm();
-			return;
-		}
+		if (timerRef.current === null) return;
 
-		const intervalId = setInterval(() => setTimer((t) => t - 1), 1000);
+		const intervalId = setInterval(() => {
+			setTimer((prevTimer) => {
+				if (prevTimer <= 0) {
+					clearInterval(intervalId);
+					handleSubmitForm(true); // Automatic submission due to timer expiration
+					return 0;
+				}
+				return prevTimer - 1;
+			});
+		}, 1000);
+
 		return () => clearInterval(intervalId);
-	}, [timer, handleSubmitForm]);
+	}, [handleSubmitForm]);
+
+	useEffect(() => {
+		// Update form value when the currentQuestionIndex changes
+		const currentSelection = selections[currentQuestionIndex] || "";
+		setValue(`question_${currentQuestionIndex}`, currentSelection);
+	}, [currentQuestionIndex, selections, setValue]);
 
 	const handleQuitTest = () => {
 		setCurrentTest(null);
 		navigate("/test");
+		window.location.reload();
 	};
 
 	const handleQuestionClick = (index) => {
-		setSelections((prevSelections) => ({
-			...prevSelections,
-			[currentQuestionIndex]: getValues(`question_${currentQuestionIndex}`),
-		}));
 		setCurrentQuestionIndex(index);
-		setValue(`question_${index}`, selections[index] || "");
 	};
 
 	const handleNavClick = (direction) => {
-		setSelections((prevSelections) => ({
-			...prevSelections,
-			[currentQuestionIndex]: getValues(`question_${currentQuestionIndex}`),
-		}));
 		setCurrentQuestionIndex((prevIndex) => {
 			const newIndex =
 				direction === "prev"
@@ -95,7 +117,6 @@ function TestWindow() {
 							prevIndex + 1,
 							(currentTest?.test?.questions.length || 1) - 1
 					  );
-			setValue(`question_${newIndex}`, selections[newIndex] || "");
 			return newIndex;
 		});
 	};
@@ -103,10 +124,10 @@ function TestWindow() {
 	const formatTime = (seconds) => {
 		const minutes = Math.floor(seconds / 60);
 		const secs = seconds % 60;
-		return `${minutes}:${secs < 10 ? `0${secs}` : secs}`;
+		return `${minutes}:${secs < 10 ? "0" + secs : secs}`;
 	};
 
-	const progress = ((totalTime - timer) / totalTime) * 100;
+	const progress = totalTime ? ((totalTime - timer) / totalTime) * 100 : 0;
 
 	if (isLoading) return <Loader />;
 
@@ -203,6 +224,7 @@ function TestWindow() {
 												<Controller
 													name={`question_${currentQuestionIndex}`}
 													control={control}
+													defaultValue={selections[currentQuestionIndex] || ""}
 													render={({ field }) => (
 														<input
 															type='radio'
@@ -210,10 +232,17 @@ function TestWindow() {
 															value={option}
 															className='mr-4 h-6 w-6 text-blue-500'
 															checked={field.value === option}
+															onChange={(e) => {
+																field.onChange(e);
+																setSelections((prevSelections) => ({
+																	...prevSelections,
+																	[currentQuestionIndex]: e.target.value,
+																}));
+															}}
 														/>
 													)}
 												/>
-												<label className='text-lg text-gray-700'>
+												<label className='text-lg text-gray-800'>
 													{option}
 												</label>
 											</div>
@@ -222,11 +251,11 @@ function TestWindow() {
 								</div>
 
 								{/* Navigation Buttons */}
-								<div className='flex justify-between items-center mt-8'>
+								<div className='flex justify-between mt-8'>
 									<button
 										type='button'
 										onClick={() => handleNavClick("prev")}
-										className='px-6 py-3 bg-gray-300 text-gray-800 rounded-lg shadow-md hover:bg-gray-400 transition-all'
+										className='px-6 py-3 bg-blue-600 text-white rounded-lg shadow-md hover:bg-blue-700 transition-colors'
 										disabled={currentQuestionIndex === 0}
 									>
 										Previous
@@ -237,7 +266,7 @@ function TestWindow() {
 										className='px-6 py-3 bg-blue-600 text-white rounded-lg shadow-md hover:bg-blue-700 transition-colors'
 										disabled={
 											currentQuestionIndex ===
-											(currentTest?.test?.questions.length || 1) - 1
+											currentTest.test.questions.length - 1
 										}
 									>
 										Next
@@ -249,23 +278,22 @@ function TestWindow() {
 				</div>
 			</div>
 
-			{/* Bottom Buttons */}
-			<div className='bg-white p-4 border-t border-gray-300'>
-				<div className='flex justify-between'>
-					<button
-						onClick={handleQuitTest}
-						className='px-6 py-3 bg-red-600 text-white rounded-lg shadow-md hover:bg-red-700 transition-colors'
-					>
-						Quit Test
-					</button>
-					<button
-						type='button'
-						onClick={handleSubmitForm}
-						className='px-6 py-3 bg-green-600 text-white rounded-lg shadow-md hover:bg-green-700 transition-colors'
-					>
-						Submit Test
-					</button>
-				</div>
+			{/* Footer Section */}
+			<div className='bg-white py-4 px-8 border-t border-gray-300 flex justify-between'>
+				<button
+					type='button'
+					onClick={handleQuitTest}
+					className='px-6 py-3 bg-red-600 text-white rounded-lg shadow-md hover:bg-red-700 transition-colors'
+				>
+					Quit Test
+				</button>
+				<button
+					type='button'
+					onClick={handleSubmit(handleSubmitForm)}
+					className='px-6 py-3 bg-green-600 text-white rounded-lg shadow-md hover:bg-green-700 transition-colors'
+				>
+					Submit Test
+				</button>
 			</div>
 		</div>
 	);
